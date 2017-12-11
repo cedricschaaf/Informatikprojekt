@@ -27,7 +27,7 @@ $(document).ready(function () {
        }); 
     });
     $(document).on("click","#signup",function(){
- $("body").html("Name: <input type='text' id='registrierename'/><br>")
+ $("body").html("Name: <input type='text' id='registriername'/><br>")
 .append("Passwort: <input type='password' id='registrierpasswort'/><br>\n")
 .append("<input type='button' value='Ok' id='signup2'/>")
 
