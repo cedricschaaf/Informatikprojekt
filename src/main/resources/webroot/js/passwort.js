@@ -26,6 +26,13 @@ $(document).ready(function () {
           } 
        }); 
     });
+    $(document).on("click","#signup",function(){
+ $("body").html("Name: <input type='text' id='registrierename'/><br>")
+.append("Passwort: <input type='password' id='registrierpasswort'/><br>\n")
+.append("<input type='button' value='Ok' id='signup2'/>")
+
+
+    });
 
     $.post("../anfrage",
             {
@@ -38,6 +45,7 @@ $(document).ready(function () {
                         $("body").html("Name: <input type='text' id='anmeldename'/><br>")
                         .append("Passwort: <input type='password' id='passwort'/><br>\n")
                         .append("<input type='button' value='OK' id='anmeldeknopf'/>")
+                        .append("<input type='button' value='Registrieren' id='signup'/>")
                         
                     } else {
                         $("body").html("Gratulation, du bist angemeldet!")
