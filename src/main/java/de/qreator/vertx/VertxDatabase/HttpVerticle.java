@@ -121,6 +121,20 @@ public class HttpVerticle extends AbstractVerticle {
             session.put("angemeldet", null);
             jo.put("typ", "logout");
             response.end(Json.encodePrettily(jo));
+        } else if (typ.equals("registrierdaten")) {
+            String name = routingContext.request().getParam("rname");
+            String passwort = routingContext.request().getParam("rpasswort");
+            LOGGER.info("Registrieranfrage von User " + name + " mit dem Passwort " + passwort);
+            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
+            vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
+                if (reply.succeeded()) {
+                    JsonObject body = (JsonObject) reply.result().body();
+                    if (body.getBoolean("erstellteUser") == true) {
+
+                    }
+                }
+            });
         }
     }
 }

@@ -16,7 +16,8 @@ public class DatenbankVerticle extends AbstractVerticle {
     private static final String SQL_NEUE_TABELLE = "create table if not exists user(id int auto_increment,name varchar(20) not null, passwort varchar(20) not null,primary key(name))";
     private static final String SQL_ÜBERPRÜFE_PASSWORT = "select passwort from user where name=?";
     private static final String SQL_ÜBERPRÜFE_EXISTENZ_USER = "select name from user where name=?";
-
+    private static final String USER_EXISTIERT="USER_EXISITIERT";
+    
     private static final String EB_ADRESSE = "vertxdatabase.eventbus";
 
     private enum ErrorCodes {
@@ -32,11 +33,14 @@ public class DatenbankVerticle extends AbstractVerticle {
 
     public void start(Future<Void> startFuture) throws Exception {
         JsonObject config = new JsonObject()
-                .put("url", "jdbc:h2:~/datenbank")
+                .put("url", "jdbc:h2:H:/datenbank")
                 .put("driver_class", "org.h2.Driver");
 
         dbClient = JDBCClient.createShared(vertx, config);
-
+        vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
+        startFuture.complete();
+        
+        /*
         Future<Void> datenbankFuture = erstelleDatenbank().compose(db -> erstelleUser("user", "geheim"));
 
         datenbankFuture.setHandler(db -> {
@@ -48,7 +52,7 @@ public class DatenbankVerticle extends AbstractVerticle {
                 LOGGER.info("Probleme beim Initialisieren der Datenbank");
                 startFuture.fail(db.cause());
             }
-        });
+        });*/
     }
 
     public void onMessage(Message<JsonObject> message) {
@@ -65,7 +69,9 @@ public class DatenbankVerticle extends AbstractVerticle {
             case "ueberpruefe-passwort":
                 überprüfeUser(message);
                 break;
-
+            case "erstelleUser":
+                erstelleNeuenUser(message);
+                break;
             default:
                 message.fail(ErrorCodes.SCHLECHTE_AKTION.ordinal(), "Schlechte Aktion: " + action);
         }
@@ -110,6 +116,7 @@ public class DatenbankVerticle extends AbstractVerticle {
                                 if (erstellen.succeeded()) {
                                     LOGGER.info("User " + name + " erfolgreich erstellt");
                                     erstellenFuture.complete();
+                                    
                                 } else {
                                     LOGGER.info(erstellen.cause().toString());
                                     erstellenFuture.fail(erstellen.cause());
@@ -117,8 +124,8 @@ public class DatenbankVerticle extends AbstractVerticle {
                             });
                         } else {
                             LOGGER.info("User mit dem Namen " + name + " existiert bereits.");
-                            //erstellenFuture.fail("User existiert bereits!"); 
-                            erstellenFuture.complete();
+                            erstellenFuture.fail(USER_EXISTIERT); 
+                            //erstellenFuture.complete();
                         }
                     } else {
                         erstellenFuture.fail(abfrage.cause());
@@ -131,6 +138,23 @@ public class DatenbankVerticle extends AbstractVerticle {
             }
         });
         return erstellenFuture;
+    }
+    
+    private void erstelleNeuenUser(Message<JsonObject> message) {
+        String name = message.body().getString("name");
+        String passwort = message.body().getString("passwort");
+        Future<Void> userErstelltFuture=erstelleUser(name,passwort);
+        userErstelltFuture.setHandler(anfrage->{
+           if (anfrage.succeeded()){
+               
+           } else {
+               String grund=anfrage.cause().toString();
+               if (grund.equals(USER_EXISTIERT)){
+                   
+               }
+           }
+        });
+        
     }
 
     private void überprüfeUser(Message<JsonObject> message) {
