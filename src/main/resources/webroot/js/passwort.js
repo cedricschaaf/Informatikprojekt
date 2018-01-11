@@ -5,7 +5,10 @@ $(document).ready(function () {
             typ: "logout"
         }, function (data) {
             if (data.typ == "logout") {
-                $("body").html("Du bist erfolgreich abgemeldet. Neu laden zum erneuten Anmelden!");
+                $("body").html("Name: <input type='text' id='anmeldename'/><br>")
+                                .append("Passwort: <input type='password' id='passwort'/><br>\n")
+                                .append("<input type='button' value='OK' id='anmeldeknopf'/>")
+                                .append("<input type='button' value='Registrieren' id='signup'/>")
             }
         })
     });
@@ -19,6 +22,8 @@ $(document).ready(function () {
             if (data.typ == "überprüfung") {
                 if (data.text == "ok") {
                     $("body").html("Gratulation, du bist angemeldet!")
+                            .append("<br><input type='button' value='Liebe' id='love'/>")
+                            .append("<br><input type='button' value='Beruf' id='job'/>")
                             .append("<br><input type='button' value='logout' id='logout'/>");
                 } else {
                     $("body").append("<br>Die Anmeldedaten waren leider falsch!");
@@ -62,10 +67,18 @@ $(document).ready(function () {
 
                     } else {
                         $("body").html("Gratulation, du bist angemeldet!")
+                                .append("<br><input type='button' value='Liebe' id='love'/>")
+                                .append("<br><input type='button' value='Beruf' id='job'/>")
                                 .append("<br><input type='button' value='logout' id='logout'/>");
                     }
                 }
             }
     );
-
-});
+ $(document).on("click", "#signup", function () {
+       $("body").html("Sie können sich hier nun kostenlos registrieren. <br>")
+               .append("Benutzername: <input type='text' id='regname'/><br>\n")
+               .append("Passwort    : <input type='passwort' id='regpasswort1'/><br>\n")
+               .append("Geburtstag  : <input type='geburt' id='geburtst'/><br>\n")
+                .append("<input type='button' value='Registrieren' id='oksignup'/>");
+    });  
+    });
