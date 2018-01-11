@@ -64,7 +64,7 @@ public class HttpVerticle extends AbstractVerticle {
         Session session = routingContext.session();
         if (session.get("angemeldet") == null) { // wenn nicht angemeldet, dann Passwort verlangen
             routingContext.response().setStatusCode(303);
-            routingContext.response().putHeader("Location", "/static/passwort.html");
+            routingContext.response().putHeader("Location", "/static/admin.html");
             routingContext.response().end();
         } else {
             LOGGER.info("Weiterleitung zum nächsten Router");
