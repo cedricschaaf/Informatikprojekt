@@ -10,7 +10,11 @@ $(document).ready(function () {
                 $("body").html("Name: <input type='text' id='anmeldename'/><br>")
                         .append("Passwort: <input type='password' id='passwort'/><br>\n")
                         .append("<input type='button' value='OK' id='anmeldeknopf'/>")
-                        .append("<input type='button' value='Registrieren' id='signup'/>")
+                        .append("Benutzername: <input type='text' id='rname'/><br>\n")
+                        .append("Passwort: <input type='password' id='rpasswort'/><br>\n")
+                        .append("Geburtstag: <input type='geburt1' id='geburt1'/><br>\n")
+                        .append("Geburtsmonat: <input type='geburt2' id='geburt2'/><br>\n")
+                        .append("<input type='button' value='Registrieren' id='oksignup'/>")
             }
         })
     });
@@ -23,12 +27,12 @@ $(document).ready(function () {
         }, function (data) {
             if (data.typ == "überprüfung") {
                 if (data.text == "ok") {
-                    $("body").html("Gratulation, du bist angemeldet!")
+                    $("body").html("Sie sind angemeldet. Wählen Sie aus, was die Zukunft in den folgenden Bereichen für Sie bereit hält.")
                             .append("<br><input type='button' value='Liebe' id='love'/>")
                             .append("<br><input type='button' value='Beruf' id='job'/>")
                             .append("<br><input type='button' value='logout' id='logout'/>");
                 } else {
-                    $("body").append("<br>Die Anmeldedaten waren leider falsch!");
+                    $("body").append("<br>Die Anmeldedaten sind leider falsch.");
                 }
             }
         });
@@ -45,24 +49,23 @@ $(document).ready(function () {
                     if (data.text == "nein") {
                         $("body").html("Name: <input type='text' id='anmeldename'/><br>")
                                 .append("Passwort: <input type='password' id='passwort'/><br>\n")
-                                .append("<input type='button' value='OK' id='anmeldeknopf'/>")
-                                .append("<input type='button' value='Registrieren' id='signup'/>")
+                                .append("<input type='button' value='OK' id='anmeldeknopf'<br><br>")
+                                .append("Benutzername: <input type='text' id='rname'/><br>\n")
+                                .append("Passwort: <input type='password' id='rpasswort'/><br>\n")
+                                .append("Geburtstag: <input type='geburt1' id='geburt1'/><br>\n")
+                                .append("Geburtsmonat: <input type='geburt2' id='geburt2'/><br>\n")
+                                .append("<input type='button' value='Registrieren' id='oksignup'/>")
 
-                    } else {
-                        $("body").html("Sie sind angemeldet. Wählen Sie aus, was die Zukunft in den folgenden Bereichen für Sie bereit hält.")
-                                .append("<br><input type='button' value='Liebe' id='love'/>")
-                                .append("<br><input type='button' value='Beruf' id='job'/>")
-                                .append("<br><input type='button' value='logout' id='logout'/>");
                     }
                 }
             }
     );
     $(document).on("click", "#signup", function () {
         $("body").html("Sie können sich hier nun kostenlos registrieren. <br><br>")
-                .append("Benutzername: <input type='text' id='regname'/><br>\n")
-                .append("Passwort    : <input type='password' id='regpasswort1'/><br>\n")
-                .append("Geburtstag  : <input type='geburt1' id='geburt1'/><br>\n")
-                .append("Geburtsmonat  : <input type='geburt2' id='geburt2'/><br>\n")
+                .append("Benutzername: <input type='text' id='rname'/><br>\n")
+                .append("Passwort: <input type='password' id='rpasswort'/><br>\n")
+                .append("Geburtstag: <input type='geburt1' id='geburt1'/><br>\n")
+                .append("Geburtsmonat: <input type='geburt2' id='geburt2'/><br>\n")
                 .append("<input type='button' value='Registrieren' id='oksignup'/>")
                 .append("<input type='button' value='Zurück' id='back'/>");
     });
@@ -79,17 +82,27 @@ $(document).ready(function () {
         $.post("../anfrage", {
             typ: "registrierdaten",
             anmeldename: $("#rname").val(),
-            passwort: $("#rpasswort").val()
+            passwort: $("#rpasswort").val(),
+            tag: $("#geburt1").val(),
+            monat: $("#geburt2").val()
         });
-        $("body").html("Sie wurden erfolgreich registriert!")
-                .append("<br><input type='button' value='Liebe' id='love'/>")
-                .append("<br><input type='button' value='Beruf' id='job'/>")
-                .append("<br><input type='button' value='logout' id='logout'/>");
-
+    }
+    , function (data) {
+        if (data.typ == "registrierung") {
+            if (data.text == "ok") {
+                $("body").html("Gratulation, du bist angemeldet!")
+                        .append("<br><input type='button' value='Liebe' id='love'/>")
+                        .append("<br><input type='button' value='Beruf' id='job'/>")
+                        .append("<br><input type='button' value='logout' id='logout'/>");
+            } else {
+                $("body").append("<br>Die Anmeldedaten waren leider falsch!");
+            }
+        }
     });
-
-
 });
+
+
+
 
 $(document).on("click", "#love", function () {
     $("body").html("Sie haben die Liebe gewählt. Möchten Sie für ihr Sternzeichen  das Horoskop erfahren? <br><br>") // Sternzeichen einfügen
