@@ -121,6 +121,7 @@ public class HttpVerticle extends AbstractVerticle {
             session.put("angemeldet", null);
             jo.put("typ", "logout");
             response.end(Json.encodePrettily(jo));
+
         } else if (typ.equals("registrierdaten")) {
             String name = routingContext.request().getParam("rname");
             String passwort = routingContext.request().getParam("rpasswort");
