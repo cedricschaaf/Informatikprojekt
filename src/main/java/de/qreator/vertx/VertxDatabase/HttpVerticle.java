@@ -80,7 +80,33 @@ public class HttpVerticle extends AbstractVerticle {
         JsonObject jo = new JsonObject();
         Session session = routingContext.session();
 
-        if (typ.equals("angemeldet")) {
+          if (typ.equals("registrierdaten")) {
+            String name = routingContext.request().getParam("anmeldename");
+            String passwort = routingContext.request().getParam("passwort");
+            String tag = routingContext.request().getParam("tag");
+            String monat = routingContext.request().getParam("monat");
+            LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
+            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
+
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleNeuenUser(message)");
+            vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
+                if (reply.succeeded()) {
+                    JsonObject body = (JsonObject) reply.result().body();
+                    if (body.getBoolean("erstellen.succeeded()") == true) {
+                        session.put("angemeldet", "ja");
+                        jo.put("typ", "registrierung").put("text", "ok");
+                    } else {
+                        jo.put("typ", "registrierung").put("text", "nein");
+                    }
+                    response.end(Json.encodePrettily(jo));
+                } else {
+                    jo.put("typ", "registrierung").put("text", "nein");
+                    response.end(Json.encodePrettily(jo));
+                }
+        
+                });
+        }
+          else if (typ.equals("angemeldet")) {
             LOGGER.info("Anfrage, ob User angemeldet ist.");
             String angemeldet = session.get("angemeldet");
             jo.put("typ", "angemeldet");
@@ -115,27 +141,38 @@ public class HttpVerticle extends AbstractVerticle {
                     response.end(Json.encodePrettily(jo));
                 }
             });
+        } else if (typ.equals("registrierdaten")) {
+            String name = routingContext.request().getParam("anmeldename");
+            String passwort = routingContext.request().getParam("passwort");
+            String tag = routingContext.request().getParam("tag");
+            String monat = routingContext.request().getParam("monat");
+            LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
+            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
 
-        } else if (typ.equals("logout")) {
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleNeuenUser(message)");
+            vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
+                if (reply.succeeded()) {
+                    JsonObject body = (JsonObject) reply.result().body();
+                    if (body.getBoolean("erstellen.succeeded()") == true) {
+                        session.put("angemeldet", "ja");
+                        jo.put("typ", "registrierung").put("text", "ok");
+                    } else {
+                        jo.put("typ", "registrierung").put("text", "nein");
+                    }
+                    response.end(Json.encodePrettily(jo));
+                } else {
+                    jo.put("typ", "registrierung").put("text", "nein");
+                    response.end(Json.encodePrettily(jo));
+                }
+        
+                });
+        }
+        
+        else if (typ.equals("logout")) {
             LOGGER.info("Logout-Anfrage");
             session.put("angemeldet", null);
             jo.put("typ", "logout");
             response.end(Json.encodePrettily(jo));
-
-        } else if (typ.equals("registrierdaten")) {
-            String name = routingContext.request().getParam("rname");
-            String passwort = routingContext.request().getParam("rpasswort");
-            LOGGER.info("Registrieranfrage von User " + name + " mit dem Passwort " + passwort);
-            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
-            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
-            vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
-                if (reply.succeeded()) {
-                    JsonObject body = (JsonObject) reply.result().body();
-                    if (body.getBoolean("erstellteUser") == true) {
-
-                    }
-                }
-            });
-        }
+        } 
     }
 }
