@@ -80,31 +80,32 @@ public class HttpVerticle extends AbstractVerticle {
         JsonObject jo = new JsonObject();
         Session session = routingContext.session();
 
-          if (typ.equals("registrierdaten")) {
-            String name = routingContext.request().getParam("anmeldename");
-            String passwort = routingContext.request().getParam("passwort");
-            String tag = routingContext.request().getParam("tag");
-            String monat = routingContext.request().getParam("monat");
-            LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
-            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
-
-            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleNeuenUser(message)");
+           if (typ.equals("registrierung")) { // Jan Benecke
+            LOGGER.info("daten erhalten");
+           String name=routingContext.request().getParam("rname");
+            String passwort=routingContext.request().getParam("rpasswort");            //String adresse = routingContext.request().getParam("regadresse");
+           JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
             vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
+              
                 if (reply.succeeded()) {
-                    JsonObject body = (JsonObject) reply.result().body();
-                    if (body.getBoolean("erstellen.succeeded()") == true) {
-                        session.put("angemeldet", "ja");
-                        jo.put("typ", "registrierung").put("text", "ok");
-                    } else {
-                        jo.put("typ", "registrierung").put("text", "nein");
+                        LOGGER.info("Reg: Datenübermittlung erfolgt");       
+                    JsonObject test = (JsonObject) reply.result().body();
+                
+                    if (test.getBoolean("REGsuccess")== true) {
+                        jo.put("typ", "bestätigung").put("text", "richtig");
                     }
-                    response.end(Json.encodePrettily(jo));
-                } else {
-                    jo.put("typ", "registrierung").put("text", "nein");
-                    response.end(Json.encodePrettily(jo));
+                    else{
+                        LOGGER.info("user exists");
+                        jo.put("typ", "bestätigung").put("text", "falsch");
+                    }
+                     response.end(Json.encodePrettily(jo));
+                    LOGGER.info("Reg: Datenübermittlung fertig");
                 }
-        
-                });
+                else{
+                    LOGGER.error("REG: Datenbankantwort FEHLER");
+                }
+            });
         }
           else if (typ.equals("angemeldet")) {
             LOGGER.info("Anfrage, ob User angemeldet ist.");
@@ -142,14 +143,14 @@ public class HttpVerticle extends AbstractVerticle {
                 }
             });
         } else if (typ.equals("registrierdaten")) {
-            String name = routingContext.request().getParam("anmeldename");
-            String passwort = routingContext.request().getParam("passwort");
+            String name = routingContext.request().getParam("regname");
+            String passwort = routingContext.request().getParam("rpasswort");
             String tag = routingContext.request().getParam("tag");
             String monat = routingContext.request().getParam("monat");
             LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
-            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
+            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort).put("tag", tag).put("monat", monat);
 
-            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleNeuenUser(message)");
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser(message)");
             vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
                 if (reply.succeeded()) {
                     JsonObject body = (JsonObject) reply.result().body();
