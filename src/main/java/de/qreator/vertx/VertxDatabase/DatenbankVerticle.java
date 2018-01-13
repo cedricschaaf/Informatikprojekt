@@ -33,17 +33,18 @@ public class DatenbankVerticle extends AbstractVerticle {
 
     public void start(Future<Void> startFuture) throws Exception {
         JsonObject config = new JsonObject()
-                .put("url", "jdbc:h2:H:/datenbank")
+                .put("url", "jdbc:h2:D:/datenbank")
                 .put("driver_class", "org.h2.Driver");
 
         dbClient = JDBCClient.createShared(vertx, config);
         vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
         startFuture.complete();
         
-        /*
-        Future<Void> datenbankFuture = erstelleDatenbank().compose(db -> erstelleUser("user", "geheim"));
+        
+        Future<Void> datenbankFuture = erstelleDatenbank();
+        erstelleUser("user","geheim");
 
-        datenbankFuture.setHandler(db -> {
+   /*    datenbankFuture.setHandler(db -> {
             if (db.succeeded()) {
                 LOGGER.info("Datenbank initialisiert");
                 vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
@@ -146,11 +147,18 @@ public class DatenbankVerticle extends AbstractVerticle {
         Future<Void> userErstelltFuture=erstelleUser(name,passwort);
         userErstelltFuture.setHandler(anfrage->{
            if (anfrage.succeeded()){
+               message.reply(new JsonObject().put("Reg", "ja"));
+               LOGGER.info("Erstellen erfolgreich");
+               
                
            } else {
                String grund=anfrage.cause().toString();
                if (grund.equals(USER_EXISTIERT)){
-                   
+                   message.reply(new JsonObject().put("Reg", "existiert"));
+               }
+               else{
+                   message.reply(new JsonObject().put("Reg", "Fehler"));
+                   LOGGER.error(anfrage.cause().toString());
                }
            }
         });

@@ -9,12 +9,12 @@ $(document).ready(function () {
             if (data.typ == "logout") {
                 $("body").html("Name: <input type='text' id='anmeldename'/><br>")
                         .append("Passwort: <input type='password' id='passwort'/><br>\n")
-                        .append("<input type='button' value='OK' id='anmeldeknopf'/>")
+                        .append("<input type='button' value='OK' id='anmeldeknopf'/><br>\n")
                         .append("Benutzername: <input type='text' id='rname'/><br>\n")
                         .append("Passwort: <input type='password' id='rpasswort'/><br>\n")
                         .append("Geburtstag: <input type='geburt1' id='geburt1'/><br>\n")
                         .append("Geburtsmonat: <input type='geburt2' id='geburt2'/><br>\n")
-                        .append("<input type='button' value='Registrieren' id='oksignup'/>")
+                        .append("<input type='button' value='Registrieren' id='oksignup12'/>")
             }
         })
     });
@@ -66,7 +66,7 @@ $(document).ready(function () {
                 .append("Passwort: <input type='password' id='rpasswort'/><br>\n")
                 .append("Geburtstag: <input type='geburt1' id='geburt1'/><br>\n")
                 .append("Geburtsmonat: <input type='geburt2' id='geburt2'/><br>\n")
-                .append("<input type='button' value='Registrieren' id='oksignup'/>")
+                .append("<input type='button' value='Registrieren5' id='oksignup1'/>")
                 .append("<input type='button' value='Zurück' id='back'/>");
     });
     $(document).on("click", "#back", function () {
@@ -85,20 +85,22 @@ $(document).ready(function () {
             passwort: $("#rpasswort").val(),
             tag: $("#geburt1").val(),
             monat: $("#geburt2").val()
-        });
-    }
-    , function (data) {
-        if (data.typ == "registrierung") {
-            if (data.text == "ok") {
-                $("body").html("Gratulation, du bist angemeldet!")
-                        .append("<br><input type='button' value='Liebe' id='love'/>")
-                        .append("<br><input type='button' value='Beruf' id='job'/>")
-                        .append("<br><input type='button' value='logout' id='logout'/>");
-            } else {
-                $("body").append("<br>Die Anmeldedaten waren leider falsch!");
+        },
+    
+     function (data) {
+            if (data.text == "Registration"){
+                if (data.Regis == "ja") {
+                // erfolgreich
             }
-        }
+                else if (data.Regis == "existiert") {
+                // user existiert
+            }
+            else{
+                //Fehlermeldung
+            }
+            }
     });
+    
 });
 
 
@@ -162,4 +164,5 @@ $(document).on("click", "#geld", function () {
 
     $("body").html("So viel Geld haben diese Trottel bisher bei uns liegen lassen: " + don + " <br><br>")  // Spendenzähler muss verbessert werden
             .append("<input type='button' value='Zurück' id='back1'/>");
+});
 });

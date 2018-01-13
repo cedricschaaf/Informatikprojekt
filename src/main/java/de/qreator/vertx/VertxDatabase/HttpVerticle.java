@@ -81,6 +81,7 @@ public class HttpVerticle extends AbstractVerticle {
         Session session = routingContext.session();
 
           if (typ.equals("registrierdaten")) {
+              LOGGER.info("tut");
             String name = routingContext.request().getParam("anmeldename");
             String passwort = routingContext.request().getParam("passwort");
             String tag = routingContext.request().getParam("tag");
@@ -88,22 +89,27 @@ public class HttpVerticle extends AbstractVerticle {
             LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
             JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
 
-            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleNeuenUser(message)");
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
+            LOGGER.info("BAum");
             vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
                 if (reply.succeeded()) {
-                    JsonObject body = (JsonObject) reply.result().body();
-                    if (body.getBoolean("erstellen.succeeded()") == true) {
-                        session.put("angemeldet", "ja");
-                        jo.put("typ", "registrierung").put("text", "ok");
-                    } else {
-                        jo.put("typ", "registrierung").put("text", "nein");
+                    JsonObject result = (JsonObject) reply.result().body();
+                    String antwort = result.getString("Reg");
+                    if (antwort.equals("ja")) {
+                        jo.put("text", "Registration").put("Regis", "success");
+                        response.end(Json.encodePrettily(jo));
+                                               
                     }
-                    response.end(Json.encodePrettily(jo));
-                } else {
-                    jo.put("typ", "registrierung").put("text", "nein");
-                    response.end(Json.encodePrettily(jo));
+                    else if (antwort.equals("existiert")) {
+                        jo.put("text", "Registration").put("Regis", "existiert");
+                         response.end(Json.encodePrettily(jo));
+                    }
+                    else{
+                        jo.put("text", "Registration").put("Regis", "fehler");
+                                
+                    }
+                    
                 }
-        
                 });
         }
           else if (typ.equals("angemeldet")) {
