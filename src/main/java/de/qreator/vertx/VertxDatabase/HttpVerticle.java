@@ -84,10 +84,12 @@ public class HttpVerticle extends AbstractVerticle {
               LOGGER.info("tut");
             String name = routingContext.request().getParam("anmeldename");
             String passwort = routingContext.request().getParam("passwort");
-            String tag = routingContext.request().getParam("tag");
-            String monat = routingContext.request().getParam("monat");
+            String tag2 = routingContext.request().getParam("tag");
+            int tag = Integer.parseInt(tag2);
+            String monat2 = routingContext.request().getParam("monat");
+            int monat = Integer.parseInt(monat2);
             LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
-            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
+            JsonObject request = new JsonObject().put("name", name).put("passwort", passwort).put("tag", tag).put("monat", monat);
 
             DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
             LOGGER.info("BAum");

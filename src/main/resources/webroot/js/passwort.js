@@ -119,8 +119,7 @@ $(document).on("click", "#job", function () {
 });
 
 $(document).on("click", "#back1", function () {
-    $("body").html("Name: <input type='text' id='anmeldename'/><br>")
-            .append("<br><input type='button' value='Liebe' id='love'/>")
+    $("body").html("<br><input type='button' value='Liebe' id='love'/>")
             .append("<br><input type='button' value='Beruf' id='job'/>")
             .append("<br><input type='button' value='logout' id='logout'/>");
 

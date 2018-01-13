@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class DatenbankVerticle extends AbstractVerticle {
 
-    private static final String SQL_NEUE_TABELLE = "create table if not exists user(id int auto_increment,name varchar(20) not null, passwort varchar(20) not null,primary key(name))";
+    private static final String SQL_NEUE_TABELLE = "create table if not exists user(id int auto_increment,name varchar(20) not null,tag int not null,monat int not null, passwort varchar(20) not null,primary key(name))";
     private static final String SQL_ÜBERPRÜFE_PASSWORT = "select passwort from user where name=?";
     private static final String SQL_ÜBERPRÜFE_EXISTENZ_USER = "select name from user where name=?";
     private static final String USER_EXISTIERT="USER_EXISITIERT";
@@ -42,9 +42,9 @@ public class DatenbankVerticle extends AbstractVerticle {
         
         
         Future<Void> datenbankFuture = erstelleDatenbank();
-        erstelleUser("user","geheim");
+        erstelleUser("user","geheim",1,1);
 
-   /*    datenbankFuture.setHandler(db -> {
+     datenbankFuture.setHandler(db -> {
             if (db.succeeded()) {
                 LOGGER.info("Datenbank initialisiert");
                 vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
@@ -53,7 +53,7 @@ public class DatenbankVerticle extends AbstractVerticle {
                 LOGGER.info("Probleme beim Initialisieren der Datenbank");
                 startFuture.fail(db.cause());
             }
-        });*/
+        });
     }
 
     public void onMessage(Message<JsonObject> message) {
@@ -100,7 +100,7 @@ public class DatenbankVerticle extends AbstractVerticle {
         return erstellenFuture;
     }
 
-    private Future<Void> erstelleUser(String name, String passwort) {
+    private Future<Void> erstelleUser(String name, String passwort, int tag, int monat) {
         Future<Void> erstellenFuture = Future.future();
 
         dbClient.getConnection(res -> {
@@ -113,7 +113,7 @@ public class DatenbankVerticle extends AbstractVerticle {
                         List<JsonArray> zeilen = abfrage.result().getResults();
                         if (zeilen.isEmpty()) { // User existiert noch nicht
                             LOGGER.info("Erstelle einen User mit dem Namen " + name + " und dem Passwort " + passwort);
-                            connection.execute("insert into user(name,passwort) values('" + name + "','" + passwort + "')", erstellen -> {
+                            connection.execute("insert into user(name,passwort,tag,monat) values('" + name + "','" + passwort + "','" + tag + "','" + monat + "')", erstellen -> {
                                 if (erstellen.succeeded()) {
                                     LOGGER.info("User " + name + " erfolgreich erstellt");
                                     erstellenFuture.complete();
@@ -144,7 +144,9 @@ public class DatenbankVerticle extends AbstractVerticle {
     private void erstelleNeuenUser(Message<JsonObject> message) {
         String name = message.body().getString("name");
         String passwort = message.body().getString("passwort");
-        Future<Void> userErstelltFuture=erstelleUser(name,passwort);
+        int tag = message.body().getInteger("tag");
+        int monat = message.body().getInteger("monat");
+        Future<Void> userErstelltFuture=erstelleUser(name,passwort,tag,monat);
         userErstelltFuture.setHandler(anfrage->{
            if (anfrage.succeeded()){
                message.reply(new JsonObject().put("Reg", "ja"));
