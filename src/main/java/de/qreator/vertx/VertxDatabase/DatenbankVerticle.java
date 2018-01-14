@@ -16,8 +16,8 @@ public class DatenbankVerticle extends AbstractVerticle {
     private static final String SQL_NEUE_TABELLE = "create table if not exists user(id int auto_increment,name varchar(20) not null,tag int not null,monat int not null, passwort varchar(20) not null,primary key(name))";
     private static final String SQL_ÜBERPRÜFE_PASSWORT = "select passwort from user where name=?";
     private static final String SQL_ÜBERPRÜFE_EXISTENZ_USER = "select name from user where name=?";
-    private static final String USER_EXISTIERT="USER_EXISITIERT";
-    
+    private static final String USER_EXISTIERT = "USER_EXISITIERT";
+    private static final String SQL_ÜBERPRÜFE_LOVE_USER ="select tag,monat from user where name=?";
     private static final String EB_ADRESSE = "vertxdatabase.eventbus";
 
     private enum ErrorCodes {
@@ -39,9 +39,8 @@ public class DatenbankVerticle extends AbstractVerticle {
         dbClient = JDBCClient.createShared(vertx, config);
         vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
         startFuture.complete();
-        
-        
-        Future<Void> datenbankFuture = erstelleDatenbank();
+
+        /*       Future<Void> datenbankFuture = erstelleDatenbank();
         erstelleUser("user","geheim",1,1);
 
      datenbankFuture.setHandler(db -> {
@@ -54,6 +53,7 @@ public class DatenbankVerticle extends AbstractVerticle {
                 startFuture.fail(db.cause());
             }
         });
+         */
     }
 
     public void onMessage(Message<JsonObject> message) {
@@ -69,9 +69,15 @@ public class DatenbankVerticle extends AbstractVerticle {
         switch (action) {
             case "ueberpruefe-passwort":
                 überprüfeUser(message);
-                break;
+                break;  
             case "erstelleUser":
                 erstelleNeuenUser(message);
+                break;
+            case "Horoskoplove":
+                Horoskoplove(message);
+                break;
+                  case "Horoskopjob":
+                Horoskoplove(message);
                 break;
             default:
                 message.fail(ErrorCodes.SCHLECHTE_AKTION.ordinal(), "Schlechte Aktion: " + action);
@@ -117,7 +123,7 @@ public class DatenbankVerticle extends AbstractVerticle {
                                 if (erstellen.succeeded()) {
                                     LOGGER.info("User " + name + " erfolgreich erstellt");
                                     erstellenFuture.complete();
-                                    
+
                                 } else {
                                     LOGGER.info(erstellen.cause().toString());
                                     erstellenFuture.fail(erstellen.cause());
@@ -125,7 +131,7 @@ public class DatenbankVerticle extends AbstractVerticle {
                             });
                         } else {
                             LOGGER.info("User mit dem Namen " + name + " existiert bereits.");
-                            erstellenFuture.fail(USER_EXISTIERT); 
+                            erstellenFuture.fail(USER_EXISTIERT);
                             //erstellenFuture.complete();
                         }
                     } else {
@@ -140,8 +146,59 @@ public class DatenbankVerticle extends AbstractVerticle {
         });
         return erstellenFuture;
     }
-    
-    private void erstelleNeuenUser(Message<JsonObject> message) {
+   private void Horoskopjob(Message<JsonObject> message) { 
+        String name = message.body().getString("name");
+
+        dbClient.getConnection(res -> {
+            if (res.succeeded()) {
+
+                SQLConnection connection = res.result();
+
+                connection.queryWithParams(SQL_ÜBERPRÜFE_LOVE_USER, new JsonArray().add(name), abfrage -> {
+                    if (abfrage.succeeded()) {
+                      List<JsonArray> liste = abfrage.result().getResults();
+                      int tag = liste.get(0).getInteger(0);
+                      int monat = liste.get(0).getInteger(1);
+                        
+                        
+                    
+                        message.reply(new JsonObject().put("tag",tag).put("monat", monat));
+                 
+                    }
+                    else {
+                        LOGGER.error(abfrage.cause().toString());
+                    }
+                    });
+ };
+ 
+ });     }
+    private void Horoskoplove(Message<JsonObject> message) { 
+        String name = message.body().getString("name");
+
+        dbClient.getConnection(res -> {
+            if (res.succeeded()) {
+
+                SQLConnection connection = res.result();
+
+                connection.queryWithParams(SQL_ÜBERPRÜFE_LOVE_USER, new JsonArray().add(name), abfrage -> {
+                    if (abfrage.succeeded()) {
+                      List<JsonArray> liste = abfrage.result().getResults();
+                      int tag = liste.get(0).getInteger(0);
+                      int monat = liste.get(0).getInteger(1);
+                        
+                        
+                    
+                        message.reply(new JsonObject().put("tag",tag).put("monat", monat));
+                 
+                    }
+                    else {
+                        LOGGER.error(abfrage.cause().toString());
+                    }
+                    });
+ };
+ 
+ });     }
+private void erstelleNeuenUser(Message<JsonObject> message) {
         String name = message.body().getString("name");
         String passwort = message.body().getString("passwort");
         int tag = message.body().getInteger("tag");

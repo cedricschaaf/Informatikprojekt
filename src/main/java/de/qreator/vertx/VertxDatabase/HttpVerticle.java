@@ -80,15 +80,15 @@ public class HttpVerticle extends AbstractVerticle {
         JsonObject jo = new JsonObject();
         Session session = routingContext.session();
 
-          if (typ.equals("registrierdaten")) {
-              LOGGER.info("tut");
+        if (typ.equals("registrierdaten")) {
+            LOGGER.info("tut");
             String name = routingContext.request().getParam("anmeldename");
             String passwort = routingContext.request().getParam("passwort");
             String tag2 = routingContext.request().getParam("tag");
             int tag = Integer.parseInt(tag2);
             String monat2 = routingContext.request().getParam("monat");
             int monat = Integer.parseInt(monat2);
-            LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
+            LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag" + tag + "." + monat + ".");
             JsonObject request = new JsonObject().put("name", name).put("passwort", passwort).put("tag", tag).put("monat", monat);
 
             DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
@@ -100,21 +100,18 @@ public class HttpVerticle extends AbstractVerticle {
                     if (antwort.equals("ja")) {
                         jo.put("text", "Registration").put("Regis", "success");
                         response.end(Json.encodePrettily(jo));
-                                               
-                    }
-                    else if (antwort.equals("existiert")) {
+
+                    } else if (antwort.equals("existiert")) {
                         jo.put("text", "Registration").put("Regis", "existiert");
-                         response.end(Json.encodePrettily(jo));
-                    }
-                    else{
+                        response.end(Json.encodePrettily(jo));
+                    } else {
                         jo.put("text", "Registration").put("Regis", "fehler");
-                                
+
                     }
-                    
+
                 }
-                });
-        }
-          else if (typ.equals("angemeldet")) {
+            });
+        } else if (typ.equals("angemeldet")) {
             LOGGER.info("Anfrage, ob User angemeldet ist.");
             String angemeldet = session.get("angemeldet");
             jo.put("typ", "angemeldet");
@@ -138,7 +135,7 @@ public class HttpVerticle extends AbstractVerticle {
                 if (reply.succeeded()) {
                     JsonObject body = (JsonObject) reply.result().body();
                     if (body.getBoolean("passwortStimmt") == true) {
-                        session.put("angemeldet", "ja");
+                        session.put("angemeldet", "ja").put("name", name);
                         jo.put("typ", "überprüfung").put("text", "ok");
                     } else {
                         jo.put("typ", "überprüfung").put("text", "nein");
@@ -154,14 +151,14 @@ public class HttpVerticle extends AbstractVerticle {
             String passwort = routingContext.request().getParam("passwort");
             String tag = routingContext.request().getParam("tag");
             String monat = routingContext.request().getParam("monat");
-            LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag"+ tag +"."+ monat +".");
+            LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag" + tag + "." + monat + ".");
             JsonObject request = new JsonObject().put("name", name).put("passwort", passwort);
 
-            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleNeuenUser(message)");
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
             vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
                 if (reply.succeeded()) {
                     JsonObject body = (JsonObject) reply.result().body();
-                    if (body.getBoolean("erstellen.succeeded()") == true) {
+                    if (body.getString("Reg").equals("ja")) {
                         session.put("angemeldet", "ja");
                         jo.put("typ", "registrierung").put("text", "ok");
                     } else {
@@ -172,15 +169,193 @@ public class HttpVerticle extends AbstractVerticle {
                     jo.put("typ", "registrierung").put("text", "nein");
                     response.end(Json.encodePrettily(jo));
                 }
-        
-                });
-        }
-        
-        else if (typ.equals("logout")) {
+
+            });
+        } else if (typ.equals("logout")) {
             LOGGER.info("Logout-Anfrage");
             session.put("angemeldet", null);
             jo.put("typ", "logout");
             response.end(Json.encodePrettily(jo));
-        } 
-    }
-}
+        } else if (typ.equals("love")) {
+
+            String name = session.get("name");
+            JsonObject request = new JsonObject().put("name", name);
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "Horoskoplove");
+            vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
+                if (reply.succeeded()) {
+                    JsonObject test = (JsonObject) reply.result().body();
+                    int tag = test.getInteger("tag");
+                    int monat = test.getInteger("monat");
+                    LOGGER.info(tag + "." + monat);
+                    if (21 <= tag && tag <= 31 && 1 == monat || 1 <= tag && tag <= 21 && 2==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "WASSERMANN").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (20 <= tag && tag <= 31 && 2 == monat || 1 <= tag && tag <= 20 && 3==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "FISCHE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (21 <= tag && tag <= 31 && 3 == monat || 1 <= tag && tag <= 20 && 4==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "WIDDER").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (21 <= tag && tag <= 31 && 4 == monat || 1 <= tag && tag <= 20 && 5==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "STIER").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (21 <= tag && tag <= 31 && 5 == monat || 1 <= tag && tag <= 21 && 6==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "ZWILLINGE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (22 <= tag && tag <= 31 && 6 == monat || 1 <= tag && tag <= 22 && 7==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "KREBS").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (23 <= tag && tag <= 31 && 7 == monat || 1 <= tag && tag <= 23 && 8==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "LÖWE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (24 <= tag && tag <= 31 && 8 == monat || 1 <= tag && tag <= 23 && 9==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "JUNGFRAU").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (20 <= tag && tag <= 24 && 9 == monat || 1 <= tag && tag <= 23 && 10==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "WAAGE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (24 <= tag && tag <= 31 && 10 == monat || 1 <= tag && tag <= 22 && 11==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "SKORPION").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (23 <= tag && tag <= 31 && 11 == monat || 1 <= tag && tag <= 21 && 12==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "SCHÜTZE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (22 <= tag && tag <= 31 && 12 == monat || 1 <= tag && tag <= 20 && 1==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "STEINBOCK").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                
+                    
+                    
+
+                }
+
+            });
+        }
+        else if (typ.equals("job")) {
+
+            String name = session.get("name");
+            JsonObject request = new JsonObject().put("name", name);
+            DeliveryOptions options = new DeliveryOptions().addHeader("action", "Horoskopjob");
+            vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
+                if (reply.succeeded()) {
+                    JsonObject test = (JsonObject) reply.result().body();
+                    int tag = test.getInteger("tag");
+                    int monat = test.getInteger("monat");
+                    LOGGER.info(tag + "." + monat);
+                    if (21 <= tag && tag <= 31 && 1 == monat || 1 <= tag && tag <= 21 && 2==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "WASSERMANN").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (20 <= tag && tag <= 31 && 2 == monat || 1 <= tag && tag <= 20 && 3==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "FISCHE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (21 <= tag && tag <= 31 && 3 == monat || 1 <= tag && tag <= 20 && 4==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "WIDDER").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (21 <= tag && tag <= 31 && 4 == monat || 1 <= tag && tag <= 20 && 5==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "STIER").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (21 <= tag && tag <= 31 && 5 == monat || 1 <= tag && tag <= 21 && 6==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "ZWILLINGE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (22 <= tag && tag <= 31 && 6 == monat || 1 <= tag && tag <= 22 && 7==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "KREBS").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (23 <= tag && tag <= 31 && 7 == monat || 1 <= tag && tag <= 23 && 8==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "LÖWE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (24 <= tag && tag <= 31 && 8 == monat || 1 <= tag && tag <= 23 && 9==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "JUNGFRAU").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (20 <= tag && tag <= 24 && 9 == monat || 1 <= tag && tag <= 23 && 10==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "WAAGE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (24 <= tag && tag <= 31 && 10 == monat || 1 <= tag && tag <= 22 && 11==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "SKORPION").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (23 <= tag && tag <= 31 && 11 == monat || 1 <= tag && tag <= 21 && 12==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "SCHÜTZE").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                    else if (22 <= tag && tag <= 31 && 12 == monat || 1 <= tag && tag <= 20 && 1==monat) {
+                        LOGGER.info(tag + "." + monat);
+
+                        jo.put("typ", "STEINBOCK").put("text", "ok");
+                        response.end(Json.encodePrettily(jo));
+                    }
+                
+                    
+                    
+
+                }
+
+            });
+        }
+    }}
