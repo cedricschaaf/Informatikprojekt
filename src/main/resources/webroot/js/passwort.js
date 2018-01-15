@@ -134,74 +134,74 @@ $(document).ready(function () {
                  
                     if (data.typ == "WASSERMANN") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Wassermann <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Wassermann lautet wie folgt: Sie haben schon Sehnsucht nacheinander, wenn Sie mal ein paar Stunden nichts voneinander hören. So romantisch.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "FISCHE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Fische <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Fische lautet wie folgt: Er/sie ist Ihnen nahe wie selten. Sie spüren seine/ihre tiefe Verbundenheit zu ihm/ihr. Wunderbar!<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "WIDDER") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Widder <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Widder lautet wie folgt: Sein/Ihr Engagement ist ansteckend und gemeinsam erreichen Sie in dieser Woche sehr viel.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "STIER") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Stier <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Stier lautet wie folgt: Er/sie ist so unentschlossen und macht Sie mit seinem/ihrem Hin und Her völlig verrückt.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "ZWILLINGE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Zwillinge <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Zwillinge lautet wie folgt: Erstens: lässt er/sie Sie nicht ausreden. Zweitens: hört er/sie Ihnen nicht richtig zu. So nervig!<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
 
                         }
                     }
                     else if (data.typ == "KREBS") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Krebs <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Krebs lautet wie folgt: Ein kooperativer und ausdauernder Kollege!<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "LÖWE") {
                         if (data.text == "ok") {
-  $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Löwe <br>\n")
+  $("body").html("Ihr Horoskop für ihr Sternzeichen Löwe lautet wie folgt: Sein/Ihr hauptsächliches Interesse in dieser Woche: Sie!<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "JUNGFRAU") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Jungfrau <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Jungfrau lautet wie folgt: Er/sie kann nicht „Nein“ sagen, wenn Sie ihn/sie um etwas bitten.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "WAAGE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Waage <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Waage lautet wie folgt: Von ihm/ihr geht negative Energie aus. Er/sie zieht Sie runter.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "SKORPION") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Skorpion <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Skorpion lautet wie folgt: Vergesslich, unzuverlässig und völlig zerstreut. Anstrengend.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "SCHÜTZE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Schütze <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Schütze lautet wie folgt: Er/sie überrascht Sie diese Woche mit einer schönen Neuigkeit.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "STEINBOCK") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Steinbock <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Steinbock lautet wie folgt: Seine/Ihre wenige Zeit verbringt er intensiv mit Ihnen und voll auf Sie konzentriert.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
@@ -224,74 +224,74 @@ $(document).ready(function () {
                  
                     if (data.typ == "WASSERMANN") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Wassermann <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Wassermann lautet wie folgt: Es öffnen sich so viele Türen, dass Sie gar nicht wissen, durch welche Sie zuerst spazieren sollen. Wie auch immer Sie sich entscheiden, Ihr Weg wird von Erfolg gekrönt.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "FISCHE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Fische <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Fische lautet wie folgt: Vor allem im März agieren sie mit messerscharfem Verstand und können deswegen auf die nächste Gehaltserhöhung hoffen.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "WIDDER") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Widder <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Widder lautet wie folgt:  Sie sollten sich im Job auf das Wesentliche besinnen und nichts riskieren.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "STIER") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Stier <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Stier lautet wie folgt: Legen Sie sich am besten gleich richtig ins Zeug, das wird sich das ganze Jahr über auszahlen.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "ZWILLINGE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Zwillinge <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Zwillinge lautet wie folgt: Bis Mitte Oktober haben die Zwillinge in 2017 alles erdenkliche Glück auf Ihrer Seite.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
 
                         }
                     }
                     else if (data.typ == "KREBS") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Krebs <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Krebs lautet wie folgt: Erst Ende Februar verbessert sich die berufliche Situation.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "LÖWE") {
                         if (data.text == "ok") {
-  $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Löwe <br>\n")
+  $("body").html("Ihr Horoskop für ihr Sternzeichen Löwe lautet wie folgt: Wenn Sie die nötige Wertschätzung Ihrer Arbeit vermissen, nicht verzweifeln, es kommen auch wieder bessere Zeiten.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "JUNGFRAU") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Jungfrau <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Jungfrau lautet wie folgt: Ihre Vorgesetzten sind ganz überrascht, mit welchem Tatendrang Sie in das neue Jahr starten.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "WAAGE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Waage <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Waage lautet wie folgt: Im Sommer geht es beruflich bergauf, auch wenn es bis dahin vielleicht die ein oder andere unerwartete Veränderung gegeben hat.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "SKORPION") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Skorpion <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Skorpion lautet wie folgt: Die Zeit des Skorpions kommt im Sommer, dann sprühen Sie nur so vor Energie und Überzeugungskraft.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "SCHÜTZE") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Schütze <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Schütze lautet wie folgt: Bis Juli bleibt es ein regelrechtes Auf und Ab.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
                     else if (data.typ == "STEINBOCK") {
                         if (data.text == "ok") {
- $("body").html("Ihr Horoskop fur ihr Sternzeichen  lautet wie folgt:Steinbock <br>\n")
+ $("body").html("Ihr Horoskop für ihr Sternzeichen Steinbock lautet wie folgt: Die Bedingungen im Job sind zu Jahresbeginn geradezu optimal.<br>\n")
               .append("<input type='button' value='Weiter' id='weiter'/>")
                         }
                     }
@@ -307,31 +307,7 @@ $(document).ready(function () {
  
 
     $(document).on("click", "#weiter", function () {
-        $("body").html("Für die Verbesserung dieser Website können Sie uns mit 1€ unterstützen. <br><br>") // Sternzeichen einfügen
-                .append("<input type='button' value='Spenden (-1€)' id='spenden'/>")
-                .append("<input type='button' value='Nein, danke' id='nö'/>");
+        $("body").html("Für die Verbesserung dieser Website können Sie uns mit 1€ unterstützen. <br><br>")
+                .append("<input type='button' value='urück' id='back1'/>");
 
     });
-
-    $(document).on("click", "#spenden", function () {
-    });
-    $("body").html("Name: <input type='text' id='anmeldename'/><br>")
-            .append("<br><input type='button' value='Liebe' id='love'/>")
-            .append("<br><input type='button' value='Beruf' id='job'/>")
-            .append("<br><input type='button' value='logout' id='logout'/>")
-            .append("<br><input type='button' value='Abzocke' id='geld'/>");
-
-    $(document).on("click", "#nö", function () {
-      $("body") .html("<br><input type='button' value='Liebe' id='love'/>")
-                .append("<br><input type='button' value='Beruf' id='job'/>")
-                .append("<br><input type='button' value='logout' id='logout'/>");
-
-
-    });
-
-    $(document).on("click", "#geld", function () {
-
-        $("body").html("So viel Geld haben diese Trottel bisher bei uns liegen lassen: " + don + " <br><br>")  // Spendenzähler muss verbessert werden
-                .append("<input type='button' value='Zurück' id='back1'/>");
-    });
-});
