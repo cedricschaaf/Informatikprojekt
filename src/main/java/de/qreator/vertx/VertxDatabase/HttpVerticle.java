@@ -106,7 +106,7 @@ public class HttpVerticle extends AbstractVerticle {
                         response.end(Json.encodePrettily(jo));
                     } else {
                         jo.put("text", "Registration").put("Regis", "fehler");
-
+response.end(Json.encodePrettily(jo));
                     }
 
                 }
@@ -193,7 +193,7 @@ public class HttpVerticle extends AbstractVerticle {
                         jo.put("typ", "WASSERMANN").put("text", "ok");
                         response.end(Json.encodePrettily(jo));
                     }
-                    else if (20 <= tag && tag <= 31 && 2 == monat || 1 <= tag && tag <= 20 && 3==monat) {
+                    else if (20 <= tag && tag <= 29 && 2 == monat || 1 <= tag && tag <= 20 && 3==monat) {
                         LOGGER.info(tag + "." + monat);
 
                         jo.put("typ", "FISCHE").put("text", "ok");
@@ -284,7 +284,7 @@ public class HttpVerticle extends AbstractVerticle {
                         jo.put("typ", "WASSERMANN").put("text", "ok");
                         response.end(Json.encodePrettily(jo));
                     }
-                    else if (20 <= tag && tag <= 31 && 2 == monat || 1 <= tag && tag <= 20 && 3==monat) {
+                    else if (20 <= tag && tag <= 29 && 2 == monat || 1 <= tag && tag <= 20 && 3==monat) {
                         LOGGER.info(tag + "." + monat);
 
                         jo.put("typ", "FISCHE").put("text", "ok");

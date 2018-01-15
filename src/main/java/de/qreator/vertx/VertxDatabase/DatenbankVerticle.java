@@ -17,7 +17,7 @@ public class DatenbankVerticle extends AbstractVerticle {
     private static final String SQL_ÜBERPRÜFE_PASSWORT = "select passwort from user where name=?";
     private static final String SQL_ÜBERPRÜFE_EXISTENZ_USER = "select name from user where name=?";
     private static final String USER_EXISTIERT = "USER_EXISITIERT";
-    private static final String SQL_ÜBERPRÜFE_LOVE_USER ="select tag,monat from user where name=?";
+    private static final String SQL_ÜBERPRÜFE_LOVE_USER = "select tag,monat from user where name=?";
     private static final String EB_ADRESSE = "vertxdatabase.eventbus";
 
     private enum ErrorCodes {
@@ -33,27 +33,27 @@ public class DatenbankVerticle extends AbstractVerticle {
 
     public void start(Future<Void> startFuture) throws Exception {
         JsonObject config = new JsonObject()
-                .put("url", "jdbc:h2:D:/datenbank")
+                .put("url", "jdbc:h2:~/datenbank")
                 .put("driver_class", "org.h2.Driver");
 
         dbClient = JDBCClient.createShared(vertx, config);
-        vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
-        startFuture.complete();
+       // vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
+      //  startFuture.complete();
 
-        /*       Future<Void> datenbankFuture = erstelleDatenbank();
-        erstelleUser("user","geheim",1,1);
+              Future<Void> datenbankFuture = erstelleDatenbank();
 
-     datenbankFuture.setHandler(db -> {
+datenbankFuture.setHandler(db -> {
             if (db.succeeded()) {
                 LOGGER.info("Datenbank initialisiert");
                 vertx.eventBus().consumer(EB_ADRESSE, this::onMessage);
+
                 startFuture.complete();
             } else {
                 LOGGER.info("Probleme beim Initialisieren der Datenbank");
                 startFuture.fail(db.cause());
             }
         });
-         */
+        
     }
 
     public void onMessage(Message<JsonObject> message) {
@@ -69,14 +69,14 @@ public class DatenbankVerticle extends AbstractVerticle {
         switch (action) {
             case "ueberpruefe-passwort":
                 überprüfeUser(message);
-                break;  
+                break;
             case "erstelleUser":
                 erstelleNeuenUser(message);
                 break;
             case "Horoskoplove":
                 Horoskoplove(message);
                 break;
-                  case "Horoskopjob":
+            case "Horoskopjob":
                 Horoskoplove(message);
                 break;
             default:
@@ -118,17 +118,30 @@ public class DatenbankVerticle extends AbstractVerticle {
                     if (abfrage.succeeded()) {
                         List<JsonArray> zeilen = abfrage.result().getResults();
                         if (zeilen.isEmpty()) { // User existiert noch nicht
-                            LOGGER.info("Erstelle einen User mit dem Namen " + name + " und dem Passwort " + passwort);
-                            connection.execute("insert into user(name,passwort,tag,monat) values('" + name + "','" + passwort + "','" + tag + "','" + monat + "')", erstellen -> {
-                                if (erstellen.succeeded()) {
+                            LOGGER.info("Prüfe Geburtsdatum");
+
+                            if (1 <= tag && tag <= 31 && 1 == monat || 1 <= tag && tag <= 31 && 3 == monat || 1 <= tag && tag <= 31 && 5 == monat || 1 <= tag && tag <= 31 && 7 == monat || 1 <= tag && tag <= 31 && 8 == monat || 1 <= tag && tag <= 31 && 10 == monat || 1 <= tag && tag <= 31 && 12 == monat) {
+                                connection.execute("insert into user(name,passwort,tag,monat) values('" + name + "','" + passwort + "','" + tag + "','" + monat + "')", erstellen -> {
                                     LOGGER.info("User " + name + " erfolgreich erstellt");
                                     erstellenFuture.complete();
 
-                                } else {
-                                    LOGGER.info(erstellen.cause().toString());
-                                    erstellenFuture.fail(erstellen.cause());
-                                }
-                            });
+                                });
+                            } else if (1 <= tag && tag <= 30 && 4 == monat || 1 <= tag && tag <= 30 && 4 == monat || 1 <= tag && tag <= 30 && 6 == monat || 1 <= tag && tag <= 30 && 9 == monat || 1 <= tag && tag <= 30 && 11 == monat) {
+                                connection.execute("insert into user(name,passwort,tag,monat) values('" + name + "','" + passwort + "','" + tag + "','" + monat + "')", erstellen -> {
+                                    LOGGER.info("User " + name + " erfolgreich erstellt");
+                                    erstellenFuture.complete();
+                                });
+                            } else if (1 <= tag && tag <= 29 && 2 == monat) {
+                                connection.execute("insert into user(name,passwort,tag,monat) values('" + name + "','" + passwort + "','" + tag + "','" + monat + "')", erstellen -> {
+                                    LOGGER.info("User " + name + " erfolgreich erstellt");
+                                    erstellenFuture.complete();
+                                });
+
+                            } else {
+                                LOGGER.info("User mit dem Namen " + name + " hat falsche Geburtsdaten");
+                                erstellenFuture.fail("WrongData");
+                            }
+
                         } else {
                             LOGGER.info("User mit dem Namen " + name + " existiert bereits.");
                             erstellenFuture.fail(USER_EXISTIERT);
@@ -146,7 +159,8 @@ public class DatenbankVerticle extends AbstractVerticle {
         });
         return erstellenFuture;
     }
-   private void Horoskopjob(Message<JsonObject> message) { 
+
+    private void Horoskopjob(Message<JsonObject> message) {
         String name = message.body().getString("name");
 
         dbClient.getConnection(res -> {
@@ -156,23 +170,22 @@ public class DatenbankVerticle extends AbstractVerticle {
 
                 connection.queryWithParams(SQL_ÜBERPRÜFE_LOVE_USER, new JsonArray().add(name), abfrage -> {
                     if (abfrage.succeeded()) {
-                      List<JsonArray> liste = abfrage.result().getResults();
-                      int tag = liste.get(0).getInteger(0);
-                      int monat = liste.get(0).getInteger(1);
-                        
-                        
-                    
-                        message.reply(new JsonObject().put("tag",tag).put("monat", monat));
-                 
-                    }
-                    else {
+                        List<JsonArray> liste = abfrage.result().getResults();
+                        int tag = liste.get(0).getInteger(0);
+                        int monat = liste.get(0).getInteger(1);
+
+                        message.reply(new JsonObject().put("tag", tag).put("monat", monat));
+
+                    } else {
                         LOGGER.error(abfrage.cause().toString());
                     }
-                    });
- };
- 
- });     }
-    private void Horoskoplove(Message<JsonObject> message) { 
+                });
+            };
+
+        });
+    }
+
+    private void Horoskoplove(Message<JsonObject> message) {
         String name = message.body().getString("name");
 
         dbClient.getConnection(res -> {
@@ -182,46 +195,50 @@ public class DatenbankVerticle extends AbstractVerticle {
 
                 connection.queryWithParams(SQL_ÜBERPRÜFE_LOVE_USER, new JsonArray().add(name), abfrage -> {
                     if (abfrage.succeeded()) {
-                      List<JsonArray> liste = abfrage.result().getResults();
-                      int tag = liste.get(0).getInteger(0);
-                      int monat = liste.get(0).getInteger(1);
-                        
-                        
-                    
-                        message.reply(new JsonObject().put("tag",tag).put("monat", monat));
-                 
-                    }
-                    else {
+                        List<JsonArray> liste = abfrage.result().getResults();
+                        int tag = liste.get(0).getInteger(0);
+                        int monat = liste.get(0).getInteger(1);
+
+                        message.reply(new JsonObject().put("tag", tag).put("monat", monat));
+
+                    } else {
                         LOGGER.error(abfrage.cause().toString());
                     }
-                    });
- };
- 
- });     }
-private void erstelleNeuenUser(Message<JsonObject> message) {
+                });
+            };
+
+        });
+    }
+
+    private void erstelleNeuenUser(Message<JsonObject> message) {
         String name = message.body().getString("name");
         String passwort = message.body().getString("passwort");
         int tag = message.body().getInteger("tag");
         int monat = message.body().getInteger("monat");
-        Future<Void> userErstelltFuture=erstelleUser(name,passwort,tag,monat);
-        userErstelltFuture.setHandler(anfrage->{
-           if (anfrage.succeeded()){
-               message.reply(new JsonObject().put("Reg", "ja"));
-               LOGGER.info("Erstellen erfolgreich");
-               
-               
-           } else {
-               String grund=anfrage.cause().toString();
-               if (grund.equals(USER_EXISTIERT)){
-                   message.reply(new JsonObject().put("Reg", "existiert"));
-               }
-               else{
-                   message.reply(new JsonObject().put("Reg", "Fehler"));
-                   LOGGER.error(anfrage.cause().toString());
-               }
-           }
+        Future<Void> userErstelltFuture = erstelleUser(name, passwort, tag, monat);
+        userErstelltFuture.setHandler(anfrage -> {
+            if (anfrage.succeeded()) {
+                message.reply(new JsonObject().put("Reg", "ja"));
+                LOGGER.info("Erstellen erfolgreich");
+
+            } else {
+                String grund = anfrage.cause().toString();
+                if (grund.equals("io.vertx.core.impl.NoStackTraceThrowable: USER_EXISITIERT")) {
+                    message.reply(new JsonObject().put("Reg", "existiert"));
+                    
+                } 
+                else if (grund.equals("WrongData")) {
+                    message.reply(new JsonObject().put("Reg", "Fehler"));
+                    LOGGER.error(anfrage.cause().toString());
+                    
+                }
+                    else {
+                    message.reply(new JsonObject().put("Reg", "Fehler"));
+                    LOGGER.error(anfrage.cause().toString());
+                }
+            }
         });
-        
+
     }
 
     private void überprüfeUser(Message<JsonObject> message) {
