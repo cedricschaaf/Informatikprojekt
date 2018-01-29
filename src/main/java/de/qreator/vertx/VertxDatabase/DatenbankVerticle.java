@@ -7,13 +7,16 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.SQLConnection;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DatenbankVerticle extends AbstractVerticle {
 
-    private static final String SQL_NEUE_TABELLE = "create table if not exists user(id int auto_increment,name varchar(20) not null,tag int not null,monat int not null, passwort varchar(20) not null,primary key(name))";
+    private static final String SQL_NEUE_TABELLE = "create table if not exists user(id int auto_increment,name varchar(20) not null,tag int not null,monat int not null, passwort varchar(70) not null,primary key(name))";
     private static final String SQL_ÜBERPRÜFE_PASSWORT = "select passwort from user where name=?";
     private static final String SQL_ÜBERPRÜFE_EXISTENZ_USER = "select name from user where name=?";
     private static final String USER_EXISTIERT = "USER_EXISITIERT";
@@ -213,10 +216,25 @@ datenbankFuture.setHandler(db -> {
     private void erstelleNeuenUser(Message<JsonObject> message) {
         String name = message.body().getString("name");
         String passwort = message.body().getString("passwort");
+        String salt = ""+(int)(Math.random()*10000);
+        InputStream stream = new ByteArrayInputStream(passwort
+        .getBytes(StandardCharsets.UTF_8));
+// oder, um einen Hash für eine Datei zu bestimmen:
+// InputStream stream = new FileInputStream("D:\\test.png");
+try {
+    // SHA-1, MD5 oder SHA-256
+    passwort = Hash.checksum(stream, "SHA-256");
+} catch (Exception e) {
+    e.printStackTrace();
+   
+}
+LOGGER.info("Schaue ob "+ name +" und "+ passwort +" tun und ob "+salt+" erstellt wird.");
+
         int tag = message.body().getInteger("tag");
         int monat = message.body().getInteger("monat");
         Future<Void> userErstelltFuture = erstelleUser(name, passwort, tag, monat);
         userErstelltFuture.setHandler(anfrage -> {
+            
             if (anfrage.succeeded()) {
                 message.reply(new JsonObject().put("Reg", "ja"));
                 LOGGER.info("Erstellen erfolgreich");
@@ -244,8 +262,20 @@ datenbankFuture.setHandler(db -> {
     private void überprüfeUser(Message<JsonObject> message) {
 
         String name = message.body().getString("name");
-        String passwort = message.body().getString("passwort");
+        String passwortEingabe = message.body().getString("passwort");
+        InputStream stream = new ByteArrayInputStream(passwortEingabe
+        .getBytes(StandardCharsets.UTF_8));
+        String passwort="";
+// oder, um einen Hash für eine Datei zu bestimmen:
+// InputStream stream = new FileInputStream("D:\\test.png");
+try {
+    // SHA-1, MD5 oder SHA-256
+    passwort = Hash.checksum(stream, "SHA-256");
+} catch (Exception e) {
+    e.printStackTrace();
+}
 
+        final String pw=passwort;
         LOGGER.info("Überprüfe, ob der Nutzer " + name + " mit dem Passwort " + passwort + " sich anmelden kann.");
 
         dbClient.queryWithParams(SQL_ÜBERPRÜFE_PASSWORT, new JsonArray().add(name), abfrage -> {
@@ -253,8 +283,8 @@ datenbankFuture.setHandler(db -> {
                 List<JsonArray> zeilen = abfrage.result().getResults();
                 if (zeilen.size() == 1) {
                     String passwortDB = zeilen.get(0).getString(0);
-
-                    if (passwortDB.equals(passwort)) {
+                    LOGGER.info("Schaue ob tut.");
+                    if (passwortDB.equals(pw)) {
                         message.reply(new JsonObject().put("passwortStimmt", Boolean.TRUE));
                         LOGGER.info("Anmeldename und Passwort stimmen überein");
                     } else {
