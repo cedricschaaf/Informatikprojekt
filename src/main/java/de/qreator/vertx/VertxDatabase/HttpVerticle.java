@@ -94,6 +94,7 @@ public class HttpVerticle extends AbstractVerticle {
             DeliveryOptions options = new DeliveryOptions().addHeader("action", "erstelleUser");
             LOGGER.info("BAum");
             vertx.eventBus().send(EB_ADRESSE, request, options, reply -> {
+              
                 if (reply.succeeded()) {
                     JsonObject result = (JsonObject) reply.result().body();
                     String antwort = result.getString("Reg");
@@ -147,8 +148,8 @@ response.end(Json.encodePrettily(jo));
                 }
             });
         } else if (typ.equals("registrierdaten")) {
-            String name = routingContext.request().getParam("anmeldename");
-            String passwort = routingContext.request().getParam("passwort");
+            String name = routingContext.request().getParam("regname");
+            String passwort = routingContext.request().getParam("rpasswort");
             String tag = routingContext.request().getParam("tag");
             String monat = routingContext.request().getParam("monat");
             LOGGER.info("Registrierungsanfrage von User " + name + " mit dem Passwort " + passwort + " und mit dem Geburtstag" + tag + "." + monat + ".");
